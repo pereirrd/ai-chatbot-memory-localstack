@@ -20,3 +20,16 @@ springdoc:
     enabled: true
     config-url: /api-docs/swagger-config
   show-actuator: false
+
+langchain4j:
+  provider: ${CHAT_MODEL_PROVIDER:openai}
+  open_ai:
+    chat_model:
+      api_key: ${OPENAI_API_KEY}
+      model_name: ${OPENAI_MODEL_NAME:gpt-4o-mini}
+  ollama:
+    chat_model:
+      base_url: ${OLLAMA_BASE_URL:http://localhost:11434}
+      model_name: ${OLLAMA_MODEL_NAME:llama3.1}
+  chat_memory:
+    max_messages: 10
