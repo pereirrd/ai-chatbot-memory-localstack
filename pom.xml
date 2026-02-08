@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>4.1.0-M1</version>
+		<relativePath />
+	</parent>
+
+	<groupId>ai.chatbot.memory</groupId>
+	<artifactId>ai.chatbot.memory</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<name>ai.chatbot.memory</name>
+	<description>AI Chatbot with memory and Localstack infrastructure.</description>
+
+	<properties>
+		<java.version>21</java.version>
+		<openapi-generator.version>7.5.0</openapi-generator.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.swagger.parser.v3</groupId>
+			<artifactId>swagger-parser-v3</artifactId>
+			<version>2.1.22</version>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>${openapi-generator.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/swagger.yaml</inputSpec>
+							<generatorName>spring</generatorName>
+							<apiPackage>ai.chatbot.memory.api</apiPackage>
+							<modelPackage>ai.chatbot.memory.model</modelPackage>
+							<invokerPackage>ai.chatbot.memory</invokerPackage>
+							<generateApiDocumentation>false</generateApiDocumentation>
+							<generateModelDocumentation>false</generateModelDocumentation>
+							<generateSupportingFiles>true</generateSupportingFiles>
+							<supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+							<configOptions>
+								<sourceFolder>src/main/java</sourceFolder>
+								<interfaceOnly>true</interfaceOnly>
+								<useSpringBoot3>true</useSpringBoot3>
+								<useJakartaEe>true</useJakartaEe>
+								<useTags>true</useTags>
+								<dateLibrary>java8</dateLibrary>
+								<hideGenerationTimestamp>true</hideGenerationTimestamp>
+								<openApiNullable>false</openApiNullable>
+								<useBeanValidation>true</useBeanValidation>
+								<library>spring-boot</library>
+							</configOptions>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

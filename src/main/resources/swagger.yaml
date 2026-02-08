@@ -1,0 +1,87 @@
+openapi: 3.0.3
+info:
+  title: AI Chatbot Memory API
+  description: API for AI Chatbot with memory functionality
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/ai-chatbot-memory/v1
+    description: Local development server
+
+paths:
+  /chat:
+    post:
+      tags:
+        - Chat
+      summary: Send a chat message
+      description: Send a message to the chatbot with memory context. If memoryId is not provided in the header, a new chat session will be created and the memoryId will be returned in the response.
+      operationId: chat
+      parameters:
+        - name: memoryId
+          in: header
+          required: false
+          description: Unique identifier for the memory session. If not provided, a new chat session will be created.
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    ChatRequest:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: The chat message to send
+          example: "Hello, how are you?"
+    ChatResponse:
+      type: object
+      properties:
+        response:
+          type: string
+          description: The chatbot's response
+          example: "Hello! I'm doing well, thank you for asking."
+        memoryId:
+          type: string
+          format: uuid
+          description: The memory session identifier. This will be a new UUID if a new chat session was created, or the same UUID from the request header if an existing session was used.
+          example: "123e4567-e89b-12d3-a456-426614174000"
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+          example: "An error occurred"
+        code:
+          type: string
+          description: Error code
+          example: "ERROR_CODE"
