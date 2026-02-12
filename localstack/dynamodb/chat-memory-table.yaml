@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Tabela DynamoDB para armazenamento de mensagens do chat com IA
+
+Resources:
+  ChatMemoryTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ChatMemory
+      AttributeDefinitions:
+        - AttributeName: memoryId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: memoryId
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+      Tags:
+        - Key: Purpose
+          Value: ChatMemoryStorage
+
+Outputs:
+  ChatMemoryTableName:
+    Description: Nome da tabela ChatMemory
+    Value: !Ref ChatMemoryTable
+    Export:
+      Name: !Sub "${AWS::StackName}-ChatMemoryTableName"
+  ChatMemoryTableArn:
+    Description: ARN da tabela ChatMemory
+    Value: !GetAtt ChatMemoryTable.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-ChatMemoryTableArn"
+  ChatMemoryTableStreamArn:
+    Description: ARN do stream da tabela ChatMemory (INSERT/UPDATE)
+    Value: !GetAtt ChatMemoryTable.StreamArn
+    Export:
+      Name: !Sub "${AWS::StackName}-ChatMemoryTableStreamArn"

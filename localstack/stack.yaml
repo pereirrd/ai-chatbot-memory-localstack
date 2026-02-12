@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Stack completa - DynamoDB ChatMemory, S3 chat-memory-history e Lambda stream-to-S3
+
+Parameters:
+  TemplateBaseUrl:
+    Type: String
+    Description: URL base dos templates no S3 (LocalStack: http://localhost:4566/cf-templates | AWS: https://s3.region.amazonaws.com/bucket-name)
+
+Resources:
+  # 1. DynamoDB - sem dependências
+  DynamoDBStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      StackName: chat-memory-dynamodb
+      TemplateURL: !Sub "${TemplateBaseUrl}/dynamodb/chat-memory-table.yaml"
+
+  # 2. S3 - sem dependências (pode ser criado em paralelo com DynamoDB)
+  S3Stack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      StackName: chat-memory-s3
+      TemplateURL: !Sub "${TemplateBaseUrl}/s3/chat-memory-history.yaml"
+
+  # 3. Lambda Stream-to-S3 - depende de DynamoDB (StreamArn) e S3 (BucketName)
+  LambdaStreamStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+      - DynamoDBStack
+      - S3Stack
+    Properties:
+      StackName: chat-memory-stream-to-s3
+      TemplateURL: !Sub "${TemplateBaseUrl}/lambda-dynamodb-streams/chat-memory-stream-to-s3.yaml"
+      Parameters:
+        ChatMemoryTableStreamArn: !GetAtt DynamoDBStack.Outputs.ChatMemoryTableStreamArn
+        ChatMemoryHistoryBucketName: !GetAtt S3Stack.Outputs.ChatMemoryHistoryBucketName
+
+Outputs:
+  ChatMemoryTableName:
+    Description: Nome da tabela DynamoDB ChatMemory
+    Value: !GetAtt DynamoDBStack.Outputs.ChatMemoryTableName
+  ChatMemoryHistoryBucketName:
+    Description: Nome do bucket S3 chat-memory-history
+    Value: !GetAtt S3Stack.Outputs.ChatMemoryHistoryBucketName
+  ChatMemoryStreamProcessorArn:
+    Description: ARN da Lambda chat-memory-stream-to-s3
+    Value: !GetAtt LambdaStreamStack.Outputs.ChatMemoryStreamProcessorArn

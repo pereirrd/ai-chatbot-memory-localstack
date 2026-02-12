@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Bucket S3 para armazenamento do histórico do chat (arquivos gerados por stream do DynamoDB)
+
+Resources:
+  ChatMemoryHistoryBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: chat-memory-history
+      Tags:
+        - Key: Purpose
+          Value: ChatMemoryHistoryStorage
+
+Outputs:
+  ChatMemoryHistoryBucketName:
+    Description: Nome do bucket chat-memory-history
+    Value: !Ref ChatMemoryHistoryBucket
+    Export:
+      Name: !Sub "${AWS::StackName}-ChatMemoryHistoryBucketName"
+  ChatMemoryHistoryBucketArn:
+    Description: ARN do bucket chat-memory-history
+    Value: !GetAtt ChatMemoryHistoryBucket.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-ChatMemoryHistoryBucketArn"
