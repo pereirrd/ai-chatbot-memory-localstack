@@ -4,7 +4,7 @@ Description: Stack completa - DynamoDB ChatMemory, S3 chat-memory-history e Lamb
 Parameters:
   TemplateBaseUrl:
     Type: String
-    Description: URL base dos templates no S3 (LocalStack: http://localhost:4566/cf-templates | AWS: https://s3.region.amazonaws.com/bucket-name)
+    Description: "URL base dos templates no S3 (LocalStack: http://localhost:4566/cf-templates | AWS: https://s3.region.amazonaws.com/bucket-name)"
 
 Resources:
   # 1. DynamoDB - sem dependências

@@ -9,7 +9,7 @@
 
 1. Subir o LocalStack:
    ```bash
-   docker run -d -p 4566:4566 localstack/localstack
+   localstack start
    ```
    ou, se estiver usando Docker Compose:
    ```bash
@@ -68,3 +68,34 @@ ENDPOINT_URL=http://localhost:4566 BUCKET_NAME=cf-templates ./localstack/deploy.
 ## Resultado esperado
 
 O script envia os templates para o S3, cria/atualiza a stack e exibe os outputs da stack no final.
+
+```
+=== Deploy Chat Memory Stack ===
+Endpoint: http://localhost:4566
+Bucket: cf-templates
+TemplateBaseUrl: http://localhost:4566/cf-templates
+
+>>> Criando bucket e fazendo upload dos templates...
+make_bucket: cf-templates
+upload: localstack/dynamodb/chat-memory-table.yaml to s3://cf-templates/dynamodb/chat-memory-table.yaml
+upload: localstack/s3/chat-memory-history.yaml to s3://cf-templates/s3/chat-memory-history.yaml
+upload: localstack/lambda-dynamodb-streams/chat-memory-stream-to-s3.yaml to s3://cf-templates/lambda-dynamodb-streams/chat-memory-stream-to-s3.yaml
+>>> Upload concluído.
+
+>>> Deploy da stack chat-memory-stack...
+>>> Criando nova stack...
+{
+    "StackId": "arn:aws:cloudformation:us-east-1:000000000000:stack/chat-memory-stack/f1440f46-eff0-4ba6-8428-3f56b4301069"
+}
+
+=== Stack deploy concluída com sucesso ===
+-------------------------------------------------------------------------------------------------------------
+|                                              DescribeStacks                                               |
++-------------------------------+---------------------------------------------------------------------------+
+|           OutputKey           |                                OutputValue                                |
++-------------------------------+---------------------------------------------------------------------------+
+|  ChatMemoryHistoryBucketName  |  chat-memory-history                                                      |
+|  ChatMemoryStreamProcessorArn |  arn:aws:lambda:us-east-1:000000000000:function:chat-memory-stream-to-s3  |
+|  ChatMemoryTableName          |  ChatMemory                                                               |
++-------------------------------+---------------------------------------------------------------------------+
+```
