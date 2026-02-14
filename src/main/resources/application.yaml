@@ -2,6 +2,18 @@ spring:
   application:
     name: ai.chatbot.memory
 
+spring.cloud.aws:
+  endpoint: ${AWS_ENDPOINT:http://localhost:4566}
+  region:
+    static: ${AWS_REGION:us-east-1}
+  dynamodb:
+    enabled: true
+
+chat.memory.dynamodb:
+  endpoint: ${DYNAMODB_ENDPOINT:http://localhost:4566}
+  region: ${DYNAMODB_REGION:us-east-1}
+  table-name: ${DYNAMODB_TABLE_NAME:ChatMemory}
+
 management:
   endpoints:
     web:
