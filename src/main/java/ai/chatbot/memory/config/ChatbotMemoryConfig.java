@@ -13,7 +13,9 @@ import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class ChatbotMemoryConfig {
@@ -38,6 +40,8 @@ public class ChatbotMemoryConfig {
 	@Bean
 	@ConditionalOnProperty(name = "langchain4j.provider", havingValue = "openai", matchIfMissing = true)
 	public AIChatbotMemory openAiChatbotMemory() {
+		log.info("Initializing OpenAI chatbot memory");
+
 		return AiServices.builder(AIChatbotMemory.class)
 				.chatModel(OpenAiChatModel.builder()
 						.apiKey(openAiApiKey)
@@ -50,6 +54,8 @@ public class ChatbotMemoryConfig {
 	@Bean
 	@ConditionalOnProperty(name = "langchain4j.provider", havingValue = "ollama")
 	public AIChatbotMemory ollamaChatbotMemory() {
+		log.info("Initializing Ollama chatbot memory");
+
 		return AiServices.builder(AIChatbotMemory.class)
 				.chatModel(OllamaChatModel.builder()
 						.baseUrl(ollamaBaseUrl)

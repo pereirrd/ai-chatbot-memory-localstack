@@ -11,7 +11,9 @@ import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.JacksonChatMessageJsonCodec;
 import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ChatMemoryStoreService implements ChatMemoryStore {
@@ -27,9 +29,15 @@ public class ChatMemoryStoreService implements ChatMemoryStore {
 
     @Override
     public List<ChatMessage> getMessages(Object memoryId) {
-        return chatMemoryRepository.findById(memoryId.toString())
+        log.info("Getting messages for memoryId: {}", memoryId);
+
+        var messages = chatMemoryRepository.findById(memoryId.toString())
                 .map(entity -> parseMessages(entity.getMessages()))
                 .orElse(Collections.emptyList());
+
+        log.info("Messages count: {}", messages.size());
+
+        return messages;
     }
 
     @Override
@@ -39,6 +47,9 @@ public class ChatMemoryStoreService implements ChatMemoryStore {
                 .memoryId(memoryId.toString())
                 .messages(messagesJson)
                 .build();
+
+        log.info("Updating messages for memoryId: {}", memoryId);
+
         chatMemoryRepository.save(entity);
     }
 

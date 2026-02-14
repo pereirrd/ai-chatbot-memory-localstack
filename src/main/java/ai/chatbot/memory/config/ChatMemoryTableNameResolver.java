@@ -17,6 +17,7 @@ public class ChatMemoryTableNameResolver implements DynamoDbTableNameResolver {
         if (ChatMemoryEntity.class.equals(clazz)) {
             return dynamoDbConfig.tableName();
         }
+
         throw new IllegalArgumentException("Unknown entity class: " + clazz.getName());
     }
 }
