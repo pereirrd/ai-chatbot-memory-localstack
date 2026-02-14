@@ -1,0 +1,64 @@
+{
+  "info": {
+    "_postman_id": "d4d50198-69d7-424d-a850-7c4813364cea",
+    "name": "AI Chatbot Memory",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "3781695"
+  },
+  "item": [
+    {
+      "name": "chat",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "memoryId",
+            "value": "5fc7adad-88bc-46a2-9cf1-9518803b3e34",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"message\": \"Oi tudo bem? Me chamo Rodrigo.\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/chat",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "chat"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "health check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/actuator/health",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "actuator",
+            "health"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

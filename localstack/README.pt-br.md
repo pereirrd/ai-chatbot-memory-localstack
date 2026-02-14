@@ -1,75 +1,75 @@
-[Português](README.pt-br.md) | [Español](README.es.md)
+[English](README.md) | [Español](README.es.md)
 
-# Instructions for running deploy.sh
+# Instruções para executar o deploy.sh
 
-## Prerequisites
+## Pré-requisitos
 
-1. **AWS CLI** installed and configured (`aws --version`)
-2. **LocalStack** running (if using local environment)
+1. **AWS CLI** instalado e configurado (`aws --version`)
+2. **LocalStack** em execução (se for usar ambiente local)
 
-## Execution with LocalStack
+## Execução com LocalStack
 
-1. Start LocalStack:
+1. Subir o LocalStack:
    ```bash
    localstack start
    ```
-   or, if using Docker Compose:
+   ou, se estiver usando Docker Compose:
    ```bash
    docker compose up -d localstack
    ```
 
-2. Run the script from the project directory:
+2. Rodar o script a partir do diretório do projeto:
    ```bash
    ./localstack/deploy.sh
    ```
-   or:
+   ou:
    ```bash
    cd localstack && ./deploy.sh
    ```
 
-## Environment variables (optional)
+## Variáveis de ambiente (opcionais)
 
-| Variable | Default value | Usage |
-|----------|---------------|-------|
-| `BUCKET_NAME` | `cf-templates` | Bucket where templates will be uploaded |
-| `ENDPOINT_URL` | `http://localhost:4566` | LocalStack endpoint |
-| `AWS_REGION` | `us-east-1` | Region |
-| `STACK_NAME` | `chat-memory-stack` | Stack name |
-| `TEMPLATE_BASE_URL` | calculated automatically | Base URL for templates in S3 (manual override) |
+| Variável | Valor padrão | Uso |
+|----------|--------------|-----|
+| `BUCKET_NAME` | `cf-templates` | Bucket onde os templates serão enviados |
+| `ENDPOINT_URL` | `http://localhost:4566` | Endpoint do LocalStack |
+| `AWS_REGION` | `us-east-1` | Região |
+| `STACK_NAME` | `chat-memory-stack` | Nome da stack |
+| `TEMPLATE_BASE_URL` | calculado automaticamente | URL base dos templates no S3 (override manual) |
 
-**Examples:**
+**Exemplos:**
 
 ```bash
-# LocalStack on another port
+# LocalStack em outra porta
 ENDPOINT_URL=http://localhost:4567 ./localstack/deploy.sh
 
-# Use another bucket
+# Usar outro bucket
 BUCKET_NAME=meus-templates ./localstack/deploy.sh
 
-# Combine variables
+# Combinar variáveis
 ENDPOINT_URL=http://localhost:4566 BUCKET_NAME=cf-templates ./localstack/deploy.sh
 ```
 
-## Execution against AWS (production)
+## Execução contra AWS (produção)
 
-1. Upload templates to an S3 bucket in your account:
+1. Fazer upload dos templates para um bucket S3 da conta:
    ```bash
-   aws s3 mb s3://meu-bucket-cf-templates --region us-east-1  # if needed
+   aws s3 mb s3://meu-bucket-cf-templates --region us-east-1  # se necessário
    aws s3 cp localstack/dynamodb/ s3://meu-bucket-cf-templates/dynamodb/ --recursive
    aws s3 cp localstack/s3/ s3://meu-bucket-cf-templates/s3/ --recursive
    aws s3 cp localstack/lambda-dynamodb-streams/ s3://meu-bucket-cf-templates/lambda-dynamodb-streams/ --recursive
    ```
 
-2. Run deploy without using LocalStack endpoint:
+2. Executar o deploy sem usar o endpoint do LocalStack:
    ```bash
    ENDPOINT_URL="" \
    TEMPLATE_BASE_URL="https://s3.us-east-1.amazonaws.com/meu-bucket-cf-templates" \
    ./localstack/deploy.sh
    ```
 
-## Expected result
+## Resultado esperado
 
-The script uploads templates to S3, creates/updates the stack and displays the stack outputs at the end.
+O script envia os templates para o S3, cria/atualiza a stack e exibe os outputs da stack no final.
 
 ```
 === Deploy Chat Memory Stack ===
