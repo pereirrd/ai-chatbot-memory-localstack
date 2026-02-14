@@ -1,37 +1,39 @@
+[Português](README.pt-br.md) | [Español](README.es.md)
+
 # AI Chatbot Memory
 
-Chatbot de IA com memória de conversação, utilizando LangChain4j e DynamoDB para persistência.
+AI chatbot with conversation memory, using LangChain4j and DynamoDB for persistence.
 
-## Tecnologias
+## Technologies
 
-| Tecnologia | Versão |
-|------------|--------|
+| Technology | Version |
+|------------|---------|
 | Java | 21 |
 | Spring Boot | 3.4.5 |
 | LangChain4j | 1.11.0-beta19 |
 | Spring Cloud AWS (DynamoDB) | 3.0.2 |
 
-## Infraestrutura: LocalStack ou AWS Cloud
+## Infrastructure: LocalStack or AWS Cloud
 
-O projeto suporta execução local com **LocalStack** ou em produção na **AWS Cloud**. A infraestrutura é provisionada via **CloudFormation**.
+The project supports local execution with **LocalStack** or production on **AWS Cloud**. Infrastructure is provisioned via **CloudFormation**.
 
-Para explorar o LocalStack, além do **DynamoDB** (persistência da memória do chat), foram criados:
+To explore LocalStack, in addition to **DynamoDB** (chat memory persistence), the following were created:
 
-| Recurso | Função |
-|---------|--------|
-| **DynamoDB** | Persistência da memória de conversação |
-| **S3** | Armazenamento do histórico de conversas |
-| **Lambda** | Captura streams do DynamoDB e encaminha para o S3 |
+| Resource | Purpose |
+|----------|---------|
+| **DynamoDB** | Conversation memory persistence |
+| **S3** | Chat history storage |
+| **Lambda** | Captures DynamoDB streams and forwards to S3 |
 
-📖 **[Instruções detalhadas de deploy →](localstack/README.md)**
+📖 **[Detailed deploy instructions →](localstack/README.md)**
 
-## Memória do modelo
+## Model memory
 
-A memória do chat é gerenciada pela interface `ChatMemoryStore` do LangChain4j. A implementação `ChatMemoryStoreService` expõe as operações de leitura, atualização e exclusão de mensagens, permitindo trocar o backend de persistência sem alterar o restante do fluxo.
+Chat memory is managed by the LangChain4j `ChatMemoryStore` interface. The `ChatMemoryStoreService` implementation exposes read, update, and delete operations for messages, allowing the persistence backend to be swapped without changing the rest of the flow.
 
-Nesta implementação, o armazenamento é feito em **DynamoDB** por meio do `ChatMemoryRepository`, que utiliza o `DynamoDbTemplate` do Spring Cloud AWS. O `ChatMemoryStoreService` é injetado no `ChatMemoryProvider` e usado pelo `MessageWindowChatMemory`, garantindo que o modelo tenha acesso ao contexto das conversas anteriores em cada sessão.
+In this implementation, storage is done in **DynamoDB** through `ChatMemoryRepository`, which uses Spring Cloud AWS `DynamoDbTemplate`. The `ChatMemoryStoreService` is injected into `ChatMemoryProvider` and used by `MessageWindowChatMemory`, ensuring the model has access to previous conversation context in each session.
 
-**Interface do modelo** — o identificador de persistência da memória é definido pela anotação `@MemoryId` no parâmetro do método. O LangChain4j utiliza esse valor para buscar e atualizar o histórico no `ChatMemoryStore`:
+**Model interface** — the memory persistence identifier is defined by the `@MemoryId` annotation on the method parameter. LangChain4j uses this value to fetch and update history in the `ChatMemoryStore`:
 
 ```java
 public interface AIChatbotMemory {
@@ -41,18 +43,18 @@ public interface AIChatbotMemory {
 }
 ```
 
-## Modelos de IA: OpenAI ou Ollama
+## AI Models: OpenAI or Ollama
 
-É possível usar modelos da **OpenAI** (cloud) ou **Ollama** (local):
+You can use **OpenAI** (cloud) or **Ollama** (local) models:
 
-| Provider | Variáveis |
+| Provider | Variables |
 |----------|-----------|
 | `openai` | `OPENAI_API_KEY`, `OPENAI_MODEL_NAME` |
 | `ollama` | `OLLAMA_BASE_URL`, `OLLAMA_MODEL_NAME` |
 
-Configure `CHAT_MODEL_PROVIDER=openai` ou `CHAT_MODEL_PROVIDER=ollama` no `.env`.
+Configure `CHAT_MODEL_PROVIDER=openai` or `CHAT_MODEL_PROVIDER=ollama` in `.env`.
 
-**Bean OpenAI** (com persistência via `chatMemoryProvider`):
+**OpenAI bean** (with persistence via `chatMemoryProvider`):
 
 ```java
 @Bean
@@ -68,7 +70,7 @@ public AIChatbotMemory openAiChatbotMemory() {
 }
 ```
 
-**Bean Ollama** (com persistência via `chatMemoryProvider`):
+**Ollama bean** (with persistence via `chatMemoryProvider`):
 
 ```java
 @Bean
@@ -84,7 +86,7 @@ public AIChatbotMemory ollamaChatbotMemory() {
 }
 ```
 
-**Implementação da persistência** (`ChatMemoryProvider` injeta o `ChatMemoryStore` em DynamoDB):
+**Persistence implementation** (`ChatMemoryProvider` injects the `ChatMemoryStore` in DynamoDB):
 
 ```java
 private ChatMemoryProvider chatMemoryProvider() {
@@ -96,11 +98,11 @@ private ChatMemoryProvider chatMemoryProvider() {
 }
 ```
 
-## Exemplos de requisição
+## Request examples
 
-**No diretório `resources` tem uma collection que pode ser utilizado no Postman.**
+**A Postman collection is available in the `resources` directory.**
 
-**Nova conversa (sem `memoryId`):**
+**New conversation (without `memoryId`):**
 
 ```bash
 curl -X POST http://localhost:8080/chat \
@@ -108,7 +110,7 @@ curl -X POST http://localhost:8080/chat \
   -d '{"message": "Qual a capital do Brasil?"}'
 ```
 
-**Continuar conversa (com `memoryId`):**
+**Continue conversation (with `memoryId`):**
 
 ```bash
 curl -X POST http://localhost:8080/chat \
