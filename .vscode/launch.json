@@ -13,16 +13,6 @@
         },
         {
             "type": "java",
-            "name": "Debug Application",
-            "request": "launch",
-            "mainClass": "ai.chatbot.memory.Application",
-            "projectName": "ai.chatbot.memory",
-            "args": "",
-            "envFile": "${workspaceFolder}/src/main/resources/.env",
-            "vmArgs": "-Dspring.profiles.active=dev -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"
-        },
-        {
-            "type": "java",
             "name": "Run Tests",
             "request": "launch",
             "mainClass": "",

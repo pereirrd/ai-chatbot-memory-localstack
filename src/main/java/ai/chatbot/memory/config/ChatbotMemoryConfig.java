@@ -7,14 +7,15 @@ import org.springframework.beans.factory.annotation.Value;
 
 import ai.chatbot.memory.domain.chat.AIChatbotMemory;
 import ai.chatbot.memory.domain.chat.ChatMemoryStoreService;
-import ai.chatbot.memory.infrastruct.persistence.ChatMemoryRepository;
 import dev.langchain4j.service.AiServices;
-import dev.langchain4j.memory.ChatMemory;
+import dev.langchain4j.memory.chat.ChatMemoryProvider;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
+@RequiredArgsConstructor
 public class ChatbotMemoryConfig {
 
 	@Value("${langchain4j.open_ai.chat_model.api_key}")
@@ -32,35 +33,37 @@ public class ChatbotMemoryConfig {
 	@Value("${langchain4j.chat_memory.max_messages}")
 	private int maxMessages;
 
+	private final ChatMemoryStoreService chatMemoryStoreService;
+
 	@Bean
 	@ConditionalOnProperty(name = "langchain4j.provider", havingValue = "openai", matchIfMissing = true)
-	public AIChatbotMemory openAiChatbotMemory(ChatMemoryRepository chatMemoryRepository) {
+	public AIChatbotMemory openAiChatbotMemory() {
 		return AiServices.builder(AIChatbotMemory.class)
 				.chatModel(OpenAiChatModel.builder()
 						.apiKey(openAiApiKey)
 						.modelName(openAiModelName)
 						.build())
-				.chatMemory(chatMemory(chatMemoryRepository))
+				.chatMemoryProvider(chatMemoryProvider())
 				.build();
 	}
 
 	@Bean
 	@ConditionalOnProperty(name = "langchain4j.provider", havingValue = "ollama")
-	public AIChatbotMemory ollamaChatbotMemory(ChatMemoryRepository chatMemoryRepository) {
+	public AIChatbotMemory ollamaChatbotMemory() {
 		return AiServices.builder(AIChatbotMemory.class)
 				.chatModel(OllamaChatModel.builder()
 						.baseUrl(ollamaBaseUrl)
 						.modelName(ollamaModelName)
 						.build())
-				.chatMemory(chatMemory(chatMemoryRepository))
+				.chatMemoryProvider(chatMemoryProvider())
 				.build();
 	}
 
-	private ChatMemory chatMemory(ChatMemoryRepository chatMemoryRepository) {
-		var persistentChatMemoryStore = new ChatMemoryStoreService(chatMemoryRepository);
-		return MessageWindowChatMemory.builder()
+	private ChatMemoryProvider chatMemoryProvider() {
+		return memoryId -> MessageWindowChatMemory.builder()
+				.id(memoryId)
 				.maxMessages(maxMessages)
-				.chatMemoryStore(persistentChatMemoryStore)
+				.chatMemoryStore(chatMemoryStoreService)
 				.build();
 	}
 }

@@ -3,6 +3,8 @@ package ai.chatbot.memory.domain.chat;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import ai.chatbot.memory.infrastruct.persistence.ChatMemoryRepository;
 import ai.chatbot.memory.infrastruct.persistence.entity.ChatMemoryEntity;
 import dev.langchain4j.data.message.ChatMessage;
@@ -10,6 +12,7 @@ import dev.langchain4j.data.message.JacksonChatMessageJsonCodec;
 import dev.langchain4j.store.memory.chat.ChatMemoryStore;
 import lombok.RequiredArgsConstructor;
 
+@Component
 @RequiredArgsConstructor
 public class ChatMemoryStoreService implements ChatMemoryStore {
 
@@ -43,7 +46,7 @@ public class ChatMemoryStoreService implements ChatMemoryStore {
         if (messagesJson == null || messagesJson.isBlank()) {
             return Collections.emptyList();
         }
-        
+
         return CHAT_MESSAGE_CODEC.messagesFromJson(messagesJson);
     }
 }
